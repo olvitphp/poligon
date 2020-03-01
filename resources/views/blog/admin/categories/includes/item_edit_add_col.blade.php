@@ -18,7 +18,7 @@
                 <div class="card-body">
                     <ul class="list-unstyled">
 
-                        <li> ID: {{ $item->id }}  Индификатор категории</li>
+                        <li> ID: {{ $item->id }}</li>
 
                     </ul>
                 </div>
@@ -40,7 +40,8 @@
 
                     <div class="form-group">
                     <label for="title">Изменено</label>
-                    <input type="text" value="{{$item->update_at}}" class="form-control" disabled>
+                    <input type="text" value="{{$item->updated_at}}" class="form-control" disabled>
+
                 </div>
                 <div class="form-group">
                     <label for="title">Удалено</label>

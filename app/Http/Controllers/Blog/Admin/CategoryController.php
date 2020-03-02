@@ -53,6 +53,8 @@ class CategoryController extends BaseController
     public function edit($id)
     {
 
+
+
         $item = BlogCategory::findOrFail($id);
        // dd(collect($item)->pluck('id'));
         $categoryList = BlogCategory::all();
@@ -70,7 +72,26 @@ class CategoryController extends BaseController
      */
     public function update(Request $request, $id)
     {
-       // $id = 11111;
+        $rules = [
+            'title'         =>  'required|min:5|max:200',
+            'slug'          =>  'max:200',
+            'description'   =>  'string|max:500|min:3',
+            'parent_id'     =>  'required|integer|exists:blog_categories,id',
+        ];
+
+       // $validatedData = $this->validate($request, $rules);
+       // $validatedData = $request->validate($rules);
+   // dd($validatedData);
+    $validator = \Validator::make($request->all(), $rules);
+    $validateData[] = $validator->passes();
+   // $validateData[] = $validator->validate();
+        $validateData[] = $validator->valid();
+        $validateData[] = $validator->failed();
+        $validateData[] = $validator->errors();
+        $validateData[] = $validator->fails();
+        dd($validateData);
+
+
         $item = BlogCategory::find($id);
 // dd($item);
         if (empty($item)) {

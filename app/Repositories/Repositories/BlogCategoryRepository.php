@@ -1,21 +1,47 @@
 <?php
 
-namespace App\Repositories\Repositories;
+namespace App\Repositories;
 
-use JasonGuru\LaravelMakeRepository\Repository\BaseRepository;
 //use Your Model
+use App\Models\BlogCategory as Model;
+ // use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class BlogCategoryRepository.
+ * @package App\Repository
  */
-class BlogCategoryRepository extends BaseRepository
+class BlogCategoryRepository extends CoreRepository
 {
     /**
      * @return string
      *  Return the model
      */
-    public function model()
+    protected function getModelClass()
     {
-        //return YourModel::class;
+        return Model::class;
     }
+//    public function model()
+//    {
+//       // return YourModel::class;
+//    }
+
+    /**
+     * @param int $id
+     * @return mixed
+     */
+
+    public function getEdit($id)
+    {
+        return $this->startConditions()->find($id);
+    }
+
+    public function getForComboBox()
+    {
+        return $this->startConditions()->all();
+    }
+
+//    private function startConditions()
+//    {
+//    }
+
 }

@@ -1,21 +1,42 @@
 <?php
 
-namespace App\Repositories\Repositories;
+namespace App\Repositories;
 
-use JasonGuru\LaravelMakeRepository\Repository\BaseRepository;
+use Illuminate\Database\Eloquent\Model;
+ use JasonGuru\LaravelMakeRepository\Repository\BaseRepository;
 //use Your Model
 
 /**
  * Class CoreRepository.
+ * @package App\Repositories
  */
-class CoreRepository extends BaseRepository
+ abstract class CoreRepository
 {
     /**
      * @return string
      *  Return the model
      */
-    public function model()
+    protected $model;
+
+      //  return YourModel::class;
+        /**
+         *  CoreRepository constructor
+         */
+        public function __construct()
+        {
+            $this->model = app($this->getModelClass());
+        }
+        /**
+         * @return mixed
+         */
+        abstract protected function getModelClass();
+
+     /**
+      * @return \Illuminate\Contracts\Foundation\Application|mixed
+      */
+    protected function startConditions()
     {
-        //return YourModel::class;
+        return clone $this->model;
     }
+
 }

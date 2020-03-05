@@ -2,24 +2,41 @@
 
 namespace App\Http\Controllers\Blog\Admin;
 
-
 use App\Http\Requests\BlogCategoryCreateRequest;
 use App\Http\Requests\BlogCategoryUpdateRequest;
 use App\Models\BlogCategory;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+ use App\Repositories\BlogCategoryRepository;
+ use Illuminate\Support\Str;
 
+
+/**
+ * Class CategoryController
+ * @package App\Http\Controllers\Blog\Admin
+ */
 
 class CategoryController extends BaseController
 {
+    /**
+     * @var BlogCategoryRepository|\Illuminate\Contracts\Foundation\Application
+     */
+    private $blogCategoryRepository;
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->blogCategoryRepository = app(BlogCategoryRepository::class);
+    }
+
     public function index()
     {
-        $paginator = BlogCategory::paginate(15);
+      //  $paginator = BlogCategory::paginate(15);
+       $paginator = $this->blogCategoryRepository->getAllWithPaginate(5);
 
         return view('blog.admin.categories.index', compact('paginator'));
     }
@@ -33,7 +50,8 @@ class CategoryController extends BaseController
     {
         $item = new BlogCategory();
 
-        $categoryList = BlogCategory::all();
+        $categoryList
+            = $this->blogCategoryRepository->getForComboBox();
 
         return view('blog.admin.categories.edit',
         compact('item', 'categoryList'));
@@ -45,7 +63,7 @@ class CategoryController extends BaseController
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(BlogCategoryCreateRequest $request)
     {
@@ -70,19 +88,25 @@ class CategoryController extends BaseController
     }
 
 
-
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     * @param BlogCategoryRepository $categoryReposytory
+     * @param $categoryRepository
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function edit($id)
-    {
 
-        $item = BlogCategory::find($id);
-      //  dd(collect($item)->pluck('id'));
-        $categoryList = BlogCategory::all();
+    public function edit($id, BlogCategoryRepository $categoryRepository)
+    {
+   //   $item = BlogCategory::findOrFail($id);
+    //   $categoryList = BlogCategory::all();
+
+        $item = $categoryRepository->getEdit($id);
+        if(empty($item)) {
+          abort(404);
+        }
+        $categoryList = $categoryRepository->getForComboBox();
 
         return view('blog.admin.categories.edit',
         compact('item',  'categoryList'));
